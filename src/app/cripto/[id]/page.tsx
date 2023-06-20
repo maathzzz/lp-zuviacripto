@@ -29,6 +29,8 @@ const features = [
 
 export default function Cripto() {
   const [ infoCoin, setInfoCoin ] = useState<any>('')
+  const [value, setValue] = useState('');
+  const [isRealToCripto, setIsRealToCripto] = useState(true);
 
   const params = useParams()
   
@@ -40,11 +42,45 @@ export default function Cripto() {
       .then((data) => setInfoCoin(data));
   }, []);
 
-  const formattedPrice = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(infoCoin?.market_data?.current_price?.brl)
+  const coinPrice = infoCoin?.market_data?.current_price?.brl
+  const formattedPrice = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(coinPrice)
   const formattedMarketCap = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(infoCoin.market_data?.market_cap?.brl)
   const formattedTotalVolume = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(infoCoin.market_data?.total_volume?.brl)
-  
-  
+
+  const handleInputChange = (event : any) => {
+    setValue(event.target.value);
+  };
+
+  const handleConversion = () => {
+    setIsRealToCripto(!isRealToCripto);
+  };
+
+  const convertToBitcoin = () => {
+    if (value) {
+      const convertedValue = parseFloat(value) / coinPrice;
+      return convertedValue.toFixed(8);
+    }
+    return '';
+  };
+
+  const convertToReal = () => {
+    if (value) {
+      const convertedValue = parseFloat(value) * coinPrice;
+      return convertedValue.toFixed(2);
+    }
+    return '';
+  };
+
+  const renderResult = () => {
+    if (isRealToCripto) {
+      const bitcoinValue = convertToBitcoin();
+      return bitcoinValue ? `${value} Reais (BRL) são ${bitcoinValue} ${coin?.name}` : '';
+    } else {
+      const realValue = convertToReal();
+      return realValue ? `${value} ${coin?.name} são ${realValue} reais` : '';
+    }
+  };
+
   return (
     // Header a ser inserido 
     <div className="w-full h-auto bg-blue-100">
@@ -72,9 +108,6 @@ export default function Cripto() {
 
       <section className="py-1">
           <div className="max-w-screen-xl mx-auto px-4 md:px-8">
-            {/* <h3 className="font-semibold text-sm text-gray-600 text-center">
-                TRUSTED BY TEAMS FROM AROUND THE WORLD
-            </h3> */}
             <div className="md:mt-[-4rem]">
               <ul className="flex gap-y-10 flex-wrap items-center justify-center [&>*]:px-12">
                   <li className="flex-none">
@@ -96,40 +129,42 @@ export default function Cripto() {
 
       <div className="mt-5 lg:mt-0">
         <div className="w-full h-auto flex flex-col mt-10 md:flex-row justify-around items-center p-4 pt-20 md:p-24">
-          <div className="flex flex-col gap-4 w-full md:w-auto">
-            <div className="flex items-center justify-center lg:justify-start md:pl-4 gap-3">
-              <Wallet size={30} color="#1A1D56" weight="bold" />
-              <h2 className="text-2xl text-center font-bold md:text-left">
-                Cotação <strong className="font-extrabold text-blue-500">{coin?.name}</strong>
-              </h2>
-            </div>
-
-            <div className="h-auto md:h-72 w-full md:w-[45rem] flex flex-col shadow-lg p-5 rounded-2xl bg-white gap-4">
-              <div className="flex items-center gap-4">
-                <Image src={infoCoin?.image?.large} width={50} height={50} alt="Logo Bitcoin" />
-                <h2 className="text-2xl font-bold"> {coin?.name} </h2>
+          <div className="flex flex-col gap-10 w-full md:w-auto">
+            <div className="flex flex-col gap-4 w-full md:w-auto">
+              <div className="flex items-center justify-center lg:justify-start md:pl-4 gap-3">
+                <Wallet size={30} color="#1A1D56" weight="bold" />
+                <h2 className="text-2xl text-center font-bold md:text-left">
+                  Cotação <strong className="font-extrabold text-blue-500">{coin?.name}</strong>
+                </h2>
               </div>
 
-              <div className="flex flex-col gap-4 lg:gap-4 items-center lg:items-start">
-                <span className="text-3xl text-gray-800 font-extrabold">{formattedPrice}</span>
-                <div className="flex gap-1 lg:gap-2 flex-col lg:flex-row items-center lg:items-baseline">
-                  {infoCoin.market_data?.price_change_percentage_24h <= 0 ? (
-                    <span className="text-red-700 font-bold text-lg">
-                      {infoCoin.market_data?.price_change_percentage_24h}%
-                    </span>
-                  ) : (
-                    <span className="text-green-600 font-bold text-lg">{"+"}{infoCoin.market_data?.price_change_percentage_24h}%</span>
-                  )}
-                  <p> de variação nas últimas 24 horas.</p>
-                </div>
-                <div className="flex flex-col items-center gap-2 lg:flex-row">
-                  <span className="font-bold"> {formattedTotalVolume} </span>
-                  <p> de volume total.</p>
+              <div className="h-auto md:h-72 w-full md:w-[45rem] flex flex-col shadow-lg p-5 rounded-2xl bg-white gap-4">
+                <div className="flex items-center gap-4">
+                  <Image src={infoCoin?.image?.large} width={50} height={50} alt="Logo Bitcoin" />
+                  <h2 className="text-2xl font-bold"> {coin?.name} </h2>
                 </div>
 
-                <div className="flex gap-2 flex-col items-center lg:flex-row">
-                  <span className="font-bold"> {formattedMarketCap} </span>
-                  <p> em capitalização de mercado.</p>
+                <div className="flex flex-col gap-4 lg:gap-4 items-center lg:items-start">
+                  <span className="text-3xl text-gray-800 font-extrabold">{formattedPrice}</span>
+                  <div className="flex gap-1 lg:gap-2 flex-col lg:flex-row items-center lg:items-baseline">
+                    {infoCoin.market_data?.price_change_percentage_24h <= 0 ? (
+                      <span className="text-red-700 font-bold text-lg">
+                        {infoCoin.market_data?.price_change_percentage_24h}%
+                      </span>
+                    ) : (
+                      <span className="text-green-600 font-bold text-lg">{"+"}{infoCoin.market_data?.price_change_percentage_24h}%</span>
+                    )}
+                    <p> de variação nas últimas 24 horas.</p>
+                  </div>
+                  <div className="flex flex-col items-center gap-2 lg:flex-row">
+                    <span className="font-bold"> {formattedTotalVolume} </span>
+                    <p> de volume total.</p>
+                  </div>
+
+                  <div className="flex gap-2 flex-col items-center lg:flex-row">
+                    <span className="font-bold"> {formattedMarketCap} </span>
+                    <p> em capitalização de mercado.</p>
+                  </div>
                 </div>
               </div>
             </div>
@@ -140,10 +175,31 @@ export default function Cripto() {
                 <h2 className="text-2xl font-bold"> Conversor de cripto </h2>
               </div>
               <div className="h-auto md:h-72 w-full md:w-[45rem] flex flex-col shadow-lg p-5 rounded-2xl bg-white gap-4">
-
+                <div className="mb-4">
+                  <label className="block mb-2 text-lg" htmlFor="value">
+                    Valor
+                  </label>
+                  <input
+                    type="number"
+                    id="value"
+                    name="value"
+                    className="border rounded px-3 py-2 w-full"
+                    placeholder="Digite o valor"
+                    value={value}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="text-center mb-4">
+                  <button
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={handleConversion}
+                  >
+                    Trocar Conversão
+                  </button>
+                </div>
+                <p className="text-center">{renderResult()}</p>
               </div>
             </div>
-
           </div>
 
           <div className="w-auto h-auto flex flex-col">
@@ -184,19 +240,19 @@ export default function Cripto() {
             <div className="relative mt-12 flex items-center justify-center">
                 <ul className="flex-row items-center grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                     {
-                        features.map((item, idx) => (
-                            <li key={idx} className="bg-white space-y-3 p-4 border w-76 lg:w-96 rounded-lg shadow-lg">
-                                <div className="text-indigo-600 pb-3">
-                                    {item.icon}
-                                </div>
-                                <h4 className="text-lg text-gray-800 font-semibold">
-                                    {item.title}
-                                </h4>
-                                <p>
-                                    {item.desc}
-                                </p>
-                            </li>
-                        ))
+                      features.map((item, idx) => (
+                          <li key={idx} className="bg-white space-y-3 p-4 border w-76 lg:w-96 rounded-lg shadow-lg">
+                              <div className="text-indigo-600 pb-3">
+                                  {item.icon}
+                              </div>
+                              <h4 className="text-lg text-gray-800 font-semibold">
+                                  {item.title}
+                              </h4>
+                              <p>
+                                  {item.desc}
+                              </p>
+                          </li>
+                      ))
                     }
                 </ul>
             </div>
