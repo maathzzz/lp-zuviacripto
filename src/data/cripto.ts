@@ -3,7 +3,7 @@ export const criptos = [
         coinId: 'ethereum',
         name: 'Ethereum',
         symbol: 'ETH',
-        description: 'Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eum, at iste recusandae rerum laborum optio placeat unde omnis',
+        description: 'O Ethereum é uma criptomoeda e uma plataforma descentralizada que permite a criação e execução de contratos inteligentes. Foi proposto inicialmente por Vitalik Buterin em 2013 e lançado em 2015.',
     }, 
     {
         coinId: 'binancecoin',

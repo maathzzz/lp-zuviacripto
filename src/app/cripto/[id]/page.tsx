@@ -8,57 +8,7 @@ import metamask  from "../../../../public/icons/metamask-seeklogo.com.svg"
 import trustwallet from "../../../../public/icons/trust-wallet-seeklogo.com.svg"
 import trezor from "../../../../public/icons/trezor-seeklogo.com.svg"
 import ledger from "../../../../public/icons/ledger-wallet-seeklogo.com.svg"
-
-interface FaqsCardProps {
-  faqsList?: any; 
-  idx?: any; 
-}
-
-export const FaqsCard = (props : FaqsCardProps) => {
-  const answerElRef = useRef<HTMLDivElement>(null)
-  const [state, setState] = useState(false)
-  const [answerH, setAnswerH] = useState('0px')
-  const { faqsList, idx } = props
-
-  const handleOpenAnswer = () => {
-      const answerElH = answerElRef.current?.childNodes[0].offsetHeight
-      setState(!state)
-      setAnswerH(`${answerElH + 20}px`)
-  }
-
-  return (
-      <div 
-          className="space-y-3 mt-5 overflow-hidden border-b"
-          key={idx}
-          onClick={handleOpenAnswer}
-      >
-          <h4 className="cursor-pointer pb-5 flex items-center justify-between text-lg text-blue-700 font-medium">
-              {faqsList.q}
-              {
-                  state ? (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
-                      </svg>
-                  ) : (
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                      </svg>
-                  )
-              }
-          </h4>
-          <div
-              ref={answerElRef} className="duration-300"
-              style={state ? {height: answerH } : {height: '0px'}}
-          >
-              <div>
-                  <p className="text-gray-500">
-                      {faqsList.a}
-                  </p>
-              </div>
-          </div>
-      </div>
-  )
-}
+import { FaqsCard } from "@/components/FaqsCard";
 
 export const faqsList = [
       {
@@ -110,10 +60,19 @@ export default function Cripto() {
 
   const coin = criptos.find((crypto) => crypto.coinId === `${params.id}`);
 
-  useEffect(() => {
+  function getInfoCoinFromApi(){
     fetch(`https://api.coingecko.com/api/v3/coins/${coin?.coinId}`)
       .then((response) => response.json())
       .then((data) => setInfoCoin(data));
+  }
+
+  useEffect(() => {
+    getInfoCoinFromApi()
+    const interval = setInterval(getInfoCoinFromApi, 30000);
+          
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   const coinPrice = infoCoin?.market_data?.current_price?.brl
@@ -148,11 +107,11 @@ export default function Cripto() {
   const renderResult = () => {
     if (isRealToCripto) {
       const criptoValue = convertToBitcoin();
-      return criptoValue ? `${value} Reais (BRL) são ${criptoValue} ${coin?.name}` : '';
+      return criptoValue ? `R$ ${value} Reais (BRL) são ${criptoValue} ${coin?.name}` : '';
 
     } else {
       const realValue = convertToReal();
-      return realValue ? `${value} ${coin?.name} são ${realValue} reais` : '';
+      return realValue ? `${value} ${coin?.name} são R$ ${realValue} reais` : '';
     }
   };
 
@@ -264,6 +223,7 @@ export default function Cripto() {
                     type="number"
                     id="value"
                     name="value"
+                    min={0}
                     className="border rounded px-3 py-2 w-full"
                     placeholder="Digite o valor"
                     value={value}
