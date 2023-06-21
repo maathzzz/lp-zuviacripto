@@ -53,13 +53,14 @@ const features = [
 ]
 
 export default function Cripto() {
+  const params = useParams()
+  const coin = criptos.find((crypto) => crypto.coinId === `${params.id}`);
+
   const [ infoCoin, setInfoCoin ] = useState<any>('')
   const [value, setValue] = useState('1');
   const [isRealToCripto, setIsRealToCripto] = useState(true);
-
-  const params = useParams()
-
-  const coin = criptos.find((crypto) => crypto.coinId === `${params.id}`);
+  const [ firstText, setFirsText ] = useState('Real (BRL)')
+  const [ secondText, setSecondText ] = useState(`${coin?.name}`)
 
   function getInfoCoinFromApi(){
     fetch(`https://api.coingecko.com/api/v3/coins/${coin?.coinId}`)
@@ -87,6 +88,15 @@ export default function Cripto() {
 
   const handleConversion = () => {
     setIsRealToCripto(!isRealToCripto);
+
+    if (!isRealToCripto) {
+      setFirsText('Real (BRL)')
+      setSecondText(`(${coin?.name})`)
+    } else {
+      setFirsText(`${coin?.name}`)
+      setSecondText('Real (BRL)')
+    }
+
   };
 
   const convertToBitcoin = () => {
@@ -115,12 +125,6 @@ export default function Cripto() {
       return realValue ? `${value} ${coin?.name} são R$ ${realValue} reais` : '';
     }
   };
-
-  const changePlaceholder = () => {
-    if (isRealToCripto) {
-
-    }
-  }
 
   return (
     // Header a ser inserido 
@@ -232,8 +236,8 @@ export default function Cripto() {
                   />
                 </div>
                 <div className="text-center mb-4 flex gap-6 justify-center items-center">
-                  <div className="w-52 h-24 border-2 shadow-2xl">
-                      
+                  <div className="w-52 h-24 border-2 shadow-2xl flex justify-center items-center">
+                    <p className="text-lg font-bold text-blue-500">{firstText}</p>
                   </div>
                   <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-14 h-14 flex justify-center items-center  rounded-full"
@@ -241,11 +245,11 @@ export default function Cripto() {
                   >
                     <ArrowsLeftRight size={30} />
                   </button>
-                  <div className="w-52 h-24 border-2 shadow-2xl">
-
+                  <div className="w-52 h-24 border-2 shadow-2xl flex justify-center items-center">
+                    <p className="text-lg font-bold text-blue-500">{secondText}</p>
                   </div>  
                 </div>
-                <p className="text-center">{renderResult()}</p>
+                <p className="text-center text-lg font-semibold">{renderResult()}</p>
               </div>
             </div>
           </div>
