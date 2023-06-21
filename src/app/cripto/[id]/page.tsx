@@ -9,14 +9,19 @@ import trustwallet from "../../../../public/icons/trust-wallet-seeklogo.com.svg"
 import trezor from "../../../../public/icons/trezor-seeklogo.com.svg"
 import ledger from "../../../../public/icons/ledger-wallet-seeklogo.com.svg"
 
-const FaqsCard = (props) => {
-  const answerElRef = useRef()
+interface FaqsCardProps {
+  faqsList?: any; 
+  idx?: any; 
+}
+
+const FaqsCard = (props : FaqsCardProps) => {
+  const answerElRef = useRef<HTMLDivElement>(null)
   const [state, setState] = useState(false)
   const [answerH, setAnswerH] = useState('0px')
   const { faqsList, idx } = props
 
   const handleOpenAnswer = () => {
-      const answerElH = answerElRef.current.childNodes[0].offsetHeight
+      const answerElH = answerElRef.current?.childNodes[0].offsetHeight
       setState(!state)
       setAnswerH(`${answerElH + 20}px`)
   }
