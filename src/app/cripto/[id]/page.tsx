@@ -14,7 +14,7 @@ interface FaqsCardProps {
   idx?: any; 
 }
 
-const FaqsCard = (props : FaqsCardProps) => {
+export const FaqsCard = (props : FaqsCardProps) => {
   const answerElRef = useRef<HTMLDivElement>(null)
   const [state, setState] = useState(false)
   const [answerH, setAnswerH] = useState('0px')
