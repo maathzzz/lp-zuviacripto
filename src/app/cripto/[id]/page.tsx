@@ -10,28 +10,29 @@ import trezor from "../../../../public/icons/trezor-seeklogo.com.svg"
 import ledger from "../../../../public/icons/ledger-wallet-seeklogo.com.svg"
 import { FaqsCard } from "@/components/FaqsCard";
 
-export const faqsList = [
-      {
-          q: "Quais são as criptomoedas disponíveis?",
-          a: "Atualmente pode ser adquirido Matic, Ethereum, USDT e BNB, mas em breve estaremos listando mais criptomoedas."
-      },
-      {
-          q: "A minha transação está sendo processada há muito tempo.",
-          a: "É comum que algumas transações levem algumas horas (especialmente se for a sua primeira compra), pois às vezes precisamos realizar verificações adicionais para garantir a segurança de nossos clientes. Se sua transação não for concluída por algumas horas e você não tiver recebido um email pedindo para verificar sua conta, envie-nos uma solicitação de suporte."
-      },
-      {
-          q: "A minha transação falhou, mas fui cobrado. Receberei um reembolso?",
-          a: "Absolutamente! Se por algum motivo sua transação falhar ou for cancelada, tomaremos as medidas necessárias para garantir o seu reembolso o quanto antes. Dependendo da sua instituição financeira, a transação pendente poderá ser cancelada no mesmo dia, mas em alguns casos pode levar até 10 dias úteis. Fique tranquilo, nunca cobramos por transações falhas e os fundos nunca sairão da sua conta."
-      },
-      {
-          q: "Minha transação foi concluída, mas não vejo a criptomoeda na minha carteira. O que posso fazer?",
-          a: "Normalmente, as transações de Bitcoin e Ethereum não aparecerão na sua carteira até que a blockchain tenha processado pelo menos uma confirmação, o que pode levar dez minutos ou mais. BTC e BCH exigem 1 confirmação e ETH exige 12 confirmações.Verifique se você digitou o endereço da carteira correto ao fazer o seu pedido de compra. Você pode fazer isso comparando o seu endereço de carteira com o endereço listado em 'Carteira destino' no rastreador de transação, que foi enviado para você na confirmação de pedido por email. Se você digitou o endereço da carteira correto, entre em contato com o provedor da sua carteira com o Hash da transação (TXID) para obter assistência. O Hash da transação (TXID) pode ser encontrado no explorador de blockchain. Se você ainda precisar de assistência, envie-nos uma solicitação de suporte."
-      },
-      {
-          q: "Por que recebi menos do que comprei?",
-          a: "Embora sempre trabalhemos para obter o melhor preço possível de nossos provedores de liquidez, os preços das criptomoedas podem variar frequentemente entre nossos parceiros. Além disso, as criptomoedas sofrem regularmente flutuações de preço, portanto existe uma pequena chance de você ver um preço diferente refletido em sua transação entre o momento em que ela foi criada e o momento em que vê os ativos na sua carteira."
-      }
-  ]
+const faqsList = [
+  {
+      q: "Quais são as criptomoedas disponíveis?",
+      a: "Atualmente pode ser adquirido Matic, Ethereum, USDT e BNB, mas em breve estaremos listando mais criptomoedas."
+  },
+  {
+      q: "A minha transação está sendo processada há muito tempo.",
+      a: "É comum que algumas transações levem algumas horas (especialmente se for a sua primeira compra), pois às vezes precisamos realizar verificações adicionais para garantir a segurança de nossos clientes. Se sua transação não for concluída por algumas horas e você não tiver recebido um email pedindo para verificar sua conta, envie-nos uma solicitação de suporte."
+  },
+  {
+      q: "A minha transação falhou, mas fui cobrado. Receberei um reembolso?",
+      a: "Absolutamente! Se por algum motivo sua transação falhar ou for cancelada, tomaremos as medidas necessárias para garantir o seu reembolso o quanto antes. Dependendo da sua instituição financeira, a transação pendente poderá ser cancelada no mesmo dia, mas em alguns casos pode levar até 10 dias úteis. Fique tranquilo, nunca cobramos por transações falhas e os fundos nunca sairão da sua conta."
+  },
+  {
+      q: "Minha transação foi concluída, mas não vejo a criptomoeda na minha carteira. O que posso fazer?",
+      a: "Normalmente, as transações de Bitcoin e Ethereum não aparecerão na sua carteira até que a blockchain tenha processado pelo menos uma confirmação, o que pode levar dez minutos ou mais. BTC e BCH exigem 1 confirmação e ETH exige 12 confirmações.Verifique se você digitou o endereço da carteira correto ao fazer o seu pedido de compra. Você pode fazer isso comparando o seu endereço de carteira com o endereço listado em 'Carteira destino' no rastreador de transação, que foi enviado para você na confirmação de pedido por email. Se você digitou o endereço da carteira correto, entre em contato com o provedor da sua carteira com o Hash da transação (TXID) para obter assistência. O Hash da transação (TXID) pode ser encontrado no explorador de blockchain. Se você ainda precisar de assistência, envie-nos uma solicitação de suporte."
+  },
+  {
+      q: "Por que recebi menos do que comprei?",
+      a: "Embora sempre trabalhemos para obter o melhor preço possível de nossos provedores de liquidez, os preços das criptomoedas podem variar frequentemente entre nossos parceiros. Além disso, as criptomoedas sofrem regularmente flutuações de preço, portanto existe uma pequena chance de você ver um preço diferente refletido em sua transação entre o momento em que ela foi criada e o momento em que vê os ativos na sua carteira."
+  }
+]
+
 
 const features = [
   {
