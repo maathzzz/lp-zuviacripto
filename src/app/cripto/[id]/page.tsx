@@ -1,13 +1,82 @@
 'use client'
 import Image from "next/image";
-import { useEffect, useState } from "react";
-import { criptos } from "@/data/cripto";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
-import { Coin, Wallet, Repeat, Cube, ChartLine, HandCoins, LockKey } from "@phosphor-icons/react";
+import { criptos } from "@/data/cripto";
+import { Coin, Wallet, Repeat, Cube, ChartLine, HandCoins, LockKey, ArrowsLeftRight  } from "@phosphor-icons/react";
 import metamask  from "../../../../public/icons/metamask-seeklogo.com.svg"
 import trustwallet from "../../../../public/icons/trust-wallet-seeklogo.com.svg"
 import trezor from "../../../../public/icons/trezor-seeklogo.com.svg"
 import ledger from "../../../../public/icons/ledger-wallet-seeklogo.com.svg"
+
+const FaqsCard = (props) => {
+  const answerElRef = useRef()
+  const [state, setState] = useState(false)
+  const [answerH, setAnswerH] = useState('0px')
+  const { faqsList, idx } = props
+
+  const handleOpenAnswer = () => {
+      const answerElH = answerElRef.current.childNodes[0].offsetHeight
+      setState(!state)
+      setAnswerH(`${answerElH + 20}px`)
+  }
+
+  return (
+      <div 
+          className="space-y-3 mt-5 overflow-hidden border-b"
+          key={idx}
+          onClick={handleOpenAnswer}
+      >
+          <h4 className="cursor-pointer pb-5 flex items-center justify-between text-lg text-blue-700 font-medium">
+              {faqsList.q}
+              {
+                  state ? (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 12H4" />
+                      </svg>
+                  ) : (
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                      </svg>
+                  )
+              }
+          </h4>
+          <div
+              ref={answerElRef} className="duration-300"
+              style={state ? {height: answerH } : {height: '0px'}}
+          >
+              <div>
+                  <p className="text-gray-500">
+                      {faqsList.a}
+                  </p>
+              </div>
+          </div>
+      </div>
+  )
+}
+
+export const faqsList = [
+      {
+          q: "Quais são as criptomoedas disponíveis?",
+          a: "Atualmente pode ser adquirido Matic, Ethereum, USDT e BNB, mas em breve estaremos listando mais criptomoedas."
+      },
+      {
+          q: "A minha transação está sendo processada há muito tempo.",
+          a: "É comum que algumas transações levem algumas horas (especialmente se for a sua primeira compra), pois às vezes precisamos realizar verificações adicionais para garantir a segurança de nossos clientes. Se sua transação não for concluída por algumas horas e você não tiver recebido um email pedindo para verificar sua conta, envie-nos uma solicitação de suporte."
+      },
+      {
+          q: "A minha transação falhou, mas fui cobrado. Receberei um reembolso?",
+          a: "Absolutamente! Se por algum motivo sua transação falhar ou for cancelada, tomaremos as medidas necessárias para garantir o seu reembolso o quanto antes. Dependendo da sua instituição financeira, a transação pendente poderá ser cancelada no mesmo dia, mas em alguns casos pode levar até 10 dias úteis. Fique tranquilo, nunca cobramos por transações falhas e os fundos nunca sairão da sua conta."
+      },
+      {
+          q: "Minha transação foi concluída, mas não vejo a criptomoeda na minha carteira. O que posso fazer?",
+          a: "Normalmente, as transações de Bitcoin e Ethereum não aparecerão na sua carteira até que a blockchain tenha processado pelo menos uma confirmação, o que pode levar dez minutos ou mais. BTC e BCH exigem 1 confirmação e ETH exige 12 confirmações.Verifique se você digitou o endereço da carteira correto ao fazer o seu pedido de compra. Você pode fazer isso comparando o seu endereço de carteira com o endereço listado em 'Carteira destino' no rastreador de transação, que foi enviado para você na confirmação de pedido por email. Se você digitou o endereço da carteira correto, entre em contato com o provedor da sua carteira com o Hash da transação (TXID) para obter assistência. O Hash da transação (TXID) pode ser encontrado no explorador de blockchain. Se você ainda precisar de assistência, envie-nos uma solicitação de suporte."
+      },
+      {
+          q: "Por que recebi menos do que comprei?",
+          a: "Embora sempre trabalhemos para obter o melhor preço possível de nossos provedores de liquidez, os preços das criptomoedas podem variar frequentemente entre nossos parceiros. Além disso, as criptomoedas sofrem regularmente flutuações de preço, portanto existe uma pequena chance de você ver um preço diferente refletido em sua transação entre o momento em que ela foi criada e o momento em que vê os ativos na sua carteira."
+      }
+  ]
 
 const features = [
   {
@@ -29,11 +98,11 @@ const features = [
 
 export default function Cripto() {
   const [ infoCoin, setInfoCoin ] = useState<any>('')
-  const [value, setValue] = useState('');
+  const [value, setValue] = useState('1');
   const [isRealToCripto, setIsRealToCripto] = useState(true);
 
   const params = useParams()
-  
+
   const coin = criptos.find((crypto) => crypto.coinId === `${params.id}`);
 
   useEffect(() => {
@@ -73,19 +142,26 @@ export default function Cripto() {
 
   const renderResult = () => {
     if (isRealToCripto) {
-      const bitcoinValue = convertToBitcoin();
-      return bitcoinValue ? `${value} Reais (BRL) são ${bitcoinValue} ${coin?.name}` : '';
+      const criptoValue = convertToBitcoin();
+      return criptoValue ? `${value} Reais (BRL) são ${criptoValue} ${coin?.name}` : '';
+
     } else {
       const realValue = convertToReal();
       return realValue ? `${value} ${coin?.name} são ${realValue} reais` : '';
     }
   };
 
+  const changePlaceholder = () => {
+    if (isRealToCripto) {
+
+    }
+  }
+
   return (
     // Header a ser inserido 
     <div className="w-full h-auto bg-blue-100">
       <header className="bg-blue-100 w-full h-24 border-b-2"> </header>
-      <section className="w-full h-auto flex flex-col md:flex-row justify-around items-center p-10 md:p-36">
+      <section className="w-full h-auto flex flex-col lg:flex-row justify-around items-center p-10 md:p-36">
           <div className="flex flex-col gap-6 md:w-[48rem] md:justify-center items-center lg:items-start">
             <span className="w-60 h-8 bg-blue-200 rounded-full text-blue-500 font-extrabold flex items-center justify-center"> FÁCIL, RÁPIDO E SEGURO </span>
             <h1 className="text-4xl md:text-6xl font-extrabold text-gray-700 leading-snug">
@@ -102,7 +178,7 @@ export default function Cripto() {
             </div>
           </div>
           <div className="">
-            <Image src={infoCoin?.image?.large} width={300} height={300} alt="Logo Bitcoin" />
+            <Image src={infoCoin?.image?.large} width={200} height={200} alt="Logo Bitcoin" />
           </div>
       </section>
 
@@ -128,8 +204,8 @@ export default function Cripto() {
       </section>
 
       <div className="mt-5 lg:mt-0">
-        <div className="w-full h-auto flex flex-col mt-10 md:flex-row justify-around items-center p-4 pt-20 md:p-24">
-          <div className="flex flex-col gap-10 w-full md:w-auto">
+        <div className="w-full h-auto flex flex-col mt-10 lg:flex-row justify-around items-center p-4 pt-20 md:p-24">
+          <div className="flex flex-col gap-10 w-full lg:w-auto">
             <div className="flex flex-col gap-4 w-full md:w-auto">
               <div className="flex items-center justify-center lg:justify-start md:pl-4 gap-3">
                 <Wallet size={30} color="#1A1D56" weight="bold" />
@@ -174,7 +250,7 @@ export default function Cripto() {
                 <Repeat size={26} color="#1A1D56" weight="bold" />
                 <h2 className="text-2xl font-bold"> Conversor de cripto </h2>
               </div>
-              <div className="h-auto md:h-72 w-full md:w-[45rem] flex flex-col shadow-lg p-5 rounded-2xl bg-white gap-4">
+              <div className="h-auto md:h-72 w-full md:w-[45rem] flex flex-col shadow-lg p-5 rounded-2xl bg-white gap-3">
                 <div className="mb-4">
                   <label className="block mb-2 text-lg" htmlFor="value">
                     Valor
@@ -189,13 +265,19 @@ export default function Cripto() {
                     onChange={handleInputChange}
                   />
                 </div>
-                <div className="text-center mb-4">
+                <div className="text-center mb-4 flex gap-6 justify-center items-center">
+                  <div className="w-52 h-24 border-2 shadow-2xl">
+                      
+                  </div>
                   <button
-                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold w-14 h-14 flex justify-center items-center  rounded-full"
                     onClick={handleConversion}
                   >
-                    Trocar Conversão
+                    <ArrowsLeftRight size={30} />
                   </button>
+                  <div className="w-52 h-24 border-2 shadow-2xl">
+
+                  </div>  
                 </div>
                 <p className="text-center">{renderResult()}</p>
               </div>
@@ -261,8 +343,28 @@ export default function Cripto() {
             </a>
         </div>
       </div>
-      <div className="w-full h-96 bg-white">
 
+      <div className="w-full h-[40rem]">
+        <section className="leading-relaxed max-w-screen-xl mt-12 mx-auto px-4 md:px-8">
+              <div className="space-y-3 text-center">
+                  <h1 className="text-3xl text-blue-500 font-extrabold">
+                    Perguntas frequentes
+                  </h1>
+                  <p className="text-gray-600 max-w-lg mx-auto text-lg">
+                      Quer nos perguntar algo?
+                  </p>
+              </div>
+              <div className="mt-14 max-w-2xl mx-auto">
+                  {
+                      faqsList.map((item, idx) => (
+                          <FaqsCard
+                              key={idx}
+                              faqsList={item}
+                          />
+                      ))
+                  }
+              </div>
+          </section>
       </div>
     </div>
   )
